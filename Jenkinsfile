@@ -8,4 +8,9 @@ node {
         sh "${mvnHome}/bin/mvn clean package"
         sh "ls -l target/*.war"
     }
+
+    stage('Docker Build') {
+        sh "docker build -t azizbz/java-web-app:latest ."
+        sh "docker images | grep java-web-app"
+    }
 }
