@@ -15,8 +15,8 @@ node {
     }
 
     stage('Docker Hub Push') {
-        withCredentials([usernamePassword(credentialsId: 'docker_hub_pwd', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-            sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+        withCredentials([string(credentialsId: 'docker_hub_pwd', variable: 'DOCKER_PASS')]) {
+            sh 'echo "$DOCKER_PASS" | docker login -u azizbz --password-stdin'
             sh 'docker push azizbz/java-web-app:latest'
             sh 'docker logout'
         }
