@@ -33,4 +33,20 @@ node {
             fi
         """
     }
+
+    stage('Smoke') {
+        sh '''
+            for i in $(seq 1 10); do
+                if curl -fs http://localhost:8090/java-web-app/ | grep -q "Spring MVC"; then
+                    echo "Smoke test passed on attempt $i"
+                    exit 0
+                fi
+                echo "Attempt $i/10 failed, retrying in 5s..."
+                sleep 5
+            done
+            echo "Smoke test failed after 10 attempts! Rolling back..."
+            docker service update --rollback java-web-app
+            exit 1
+        '''
+    }
 }
