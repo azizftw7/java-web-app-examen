@@ -23,4 +23,14 @@ node {
             sh 'docker logout'
         }
     }
+
+    stage('Deploy') {
+        sh """
+            if docker service inspect java-web-app >/dev/null 2>&1; then
+                docker service update --image azizbz/java-web-app:${BUILD_NUMBER} java-web-app
+            else
+                docker service create --name java-web-app --replicas 2 -p 8090:8080 --update-failure-action rollback azizbz/java-web-app:${BUILD_NUMBER}
+            fi
+        """
+    }
 }
